@@ -1,0 +1,20 @@
+﻿@model Online_Quiz_Platform.Models.Entities.Login
+
+<h2>Login</h2>
+
+<form asp-action="Index" method="post">
+    <div class="mt-4">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mt-4">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Login</button>
+    <a asp-controller="Register" asp-action="Index" class="btn btn-secondary mt-3">
+        Register as New User
+    </a>
+</form>
