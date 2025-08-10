@@ -18,7 +18,6 @@ namespace Online_Quiz_Platform.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public IActionResult Index(Login login)
         {
@@ -26,17 +25,30 @@ namespace Online_Quiz_Platform.Controllers
             {
                 return View(login);
             }
-            // Try to find a matching user
-            var user = _context.Registers
-                        .FirstOrDefault(r => r.Email == login.Email && r.Password == login.Password);
 
-            if (user == null)
+            // Find user by email
+            var user = _context.Registers.FirstOrDefault(r => r.Email == login.Email);
+
+            // Validate user existence and password
+            if (user == null || !VerifyPassword(login.Password, user.Password))
             {
-                ModelState.AddModelError("Password", "Invalid login credentials.");
+                ModelState.AddModelError("", "Invalid login credentials.");
                 return View(login);
             }
+
+            // Save user session
+            TempData["UserEmail"] = user.Email;
+
             return RedirectToAction("Index", "Home");
         }
 
+        // Temporary method for password check (replace with real hashing)
+        private bool VerifyPassword(string enteredPassword, string storedPassword)
+        {
+            return enteredPassword == storedPassword;
+        }
+
     }
+
 }
+
