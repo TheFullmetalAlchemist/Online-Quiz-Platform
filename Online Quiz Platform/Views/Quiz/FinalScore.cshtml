@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Quiz Results";
+}
+
+<h2>Quiz Completed 🎉</h2>
+
+<p>You answered <strong>@ViewBag.CorrectAnswers</strong> out of <strong>@ViewBag.TotalQuestions</strong> questions correctly.</p>
+<p>Your score: <strong>@ViewBag.ScorePercentage%</strong></p>
+
+@if (ViewBag.ScorePercentage >= 50)
+{
+    <p class="text-success">✅ Well done! You passed!</p>
+}
+else
+{
+    <p class="text-danger">❌ Better luck next time.</p>
+}
+
+<a asp-controller="Quiz" asp-action="Start" class="btn btn-primary mt-3">Retake Quiz</a>

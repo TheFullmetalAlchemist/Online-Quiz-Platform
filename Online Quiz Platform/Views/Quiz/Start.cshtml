@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Online_Quiz_Platform.Models.Entities.Question>
+
+@{
+    ViewData["Title"] = "Take the Quiz";
+}
+
+<h2>Answer all questions below</h2>
+
+<form asp-action="SubmitQuiz" method="post">
+    @foreach (var question in Model)
+    {
+        <div class="mb-4 p-3 border rounded">
+            <p><strong>@question.Text</strong></p>
+            @foreach (var option in question.Options)
+            {
+                <div>
+                    <input type="radio" name="answers[@question.Id]" value="@option.Id" required />
+                    @option.Text
+                </div>
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">Submit Quiz</button>
+</form>

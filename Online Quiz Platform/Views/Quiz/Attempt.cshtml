@@ -1,0 +1,21 @@
+﻿@model Online_Quiz_Platform.Models.Entities.Question
+
+@{
+    ViewData["Title"] = "Attempt Quiz";
+}
+
+<h2>@Model.Text</h2>
+
+<form asp-action="SubmitAnswer" method="post">
+    <input type="hidden" name="questionId" value="@Model.Id" />
+
+    @foreach (var option in Model.Options)
+    {
+        <div>
+            <input type="radio" name="selectedOption" value="@option.Id" required />
+            @option.Text
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success mt-3">Submit</button>
+</form>
