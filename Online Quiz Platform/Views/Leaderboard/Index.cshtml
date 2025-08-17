@@ -1,0 +1,28 @@
+﻿@model IEnumerable<dynamic>
+
+<h2>🏆 Leaderboard</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>User</th>
+            <th>Total Score</th>
+            <th>Last Played</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int rank = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@rank</td>
+                    <td>@item.UserEmail</td>
+                    <td>@item.TotalScore</td>
+                    <td>@item.LastPlayed.ToString("g")</td>
+                </tr>
+                rank++;
+            }
+        }
+    </tbody>
+</table>

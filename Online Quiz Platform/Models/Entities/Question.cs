@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Online_Quiz_Platform.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Online_Quiz_Platform.Models.Entities
 {
@@ -13,5 +14,9 @@ namespace Online_Quiz_Platform.Models.Entities
         public List<Option> Options { get; set; } = new List<Option>();
 
         public Guid Correctoption { get; set; }
+
+        // New FK to Quiz
+        public int QuizId { get; set; }
+        public Quiz? Quiz { get; set; }
     }
 }

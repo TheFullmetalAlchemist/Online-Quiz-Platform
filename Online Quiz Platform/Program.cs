@@ -24,35 +24,50 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    if (!db.Questions.Any())
+    if (!db.Quizzes.Any())
     {
-        var q1CorrectId = Guid.NewGuid();
-        var q1 = new Question
+        var quiz = new Quiz
         {
-            Id = Guid.NewGuid(),
-            Text = "What is the capital of France?",
-            Options = new List<Option>
+            Title = "General Knowledge Quiz",
+            IsPublished = true,
+            CreatedDate = DateTime.Now,
+            Questions = new List<Question>
             {
-                new Option { Id = q1CorrectId, Text = "Paris" },
-                new Option { Id = Guid.NewGuid(), Text = "London" }
-            },
-            Correctoption = q1CorrectId
+                new Question
+                {
+                    Text = "What is the capital of France?",
+                    Options = new List<Option>
+                    {
+                        new Option { Text = "Paris" },
+                        new Option { Text = "London" },
+                        new Option { Text = "Berlin" },
+                        new Option { Text = "Madrid" }
+                    }
+                },
+                new Question
+                {
+                    Text = "What is the capital of India?",
+                    Options = new List<Option>
+                    {
+                        new Option { Text = "Mumbai" },
+                        new Option { Text = "New Delhi" },
+                        new Option { Text = "Chennai" },
+                        new Option { Text = "Kolkata" }
+                    }
+                }
+            }
         };
 
-        var q2CorrectId = Guid.NewGuid();
-        var q2 = new Question
-        {
-            Id = Guid.NewGuid(),
-            Text = "What is the capital of India?",
-            Options = new List<Option>
-            {
-                new Option { Id = Guid.NewGuid(), Text = "Mumbai" },
-                new Option { Id = q2CorrectId, Text = "New Delhi" }
-            },
-            Correctoption = q2CorrectId
-        };
+        db.Quizzes.Add(quiz);
+        db.SaveChanges();
 
-        db.Questions.AddRange(q1, q2);
+        // ✅ Fix correct answers after IDs are generated
+        var franceQ = quiz.Questions.First(q => q.Text.Contains("France"));
+        franceQ.Correctoption = franceQ.Options.First(o => o.Text == "Paris").Id;
+
+        var indiaQ = quiz.Questions.First(q => q.Text.Contains("India"));
+        indiaQ.Correctoption = indiaQ.Options.First(o => o.Text == "New Delhi").Id;
+
         db.SaveChanges();
     }
 }
