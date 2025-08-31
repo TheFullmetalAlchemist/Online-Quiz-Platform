@@ -5,7 +5,7 @@ namespace Online_Quiz_Platform.Models.Entities
     public class QuizAttempt
     {
         public int Id { get; set; }
-        public string UserEmail { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
 
         public int Score { get; set; }
         public DateTime AttemptDate { get; set; } = DateTime.Now;

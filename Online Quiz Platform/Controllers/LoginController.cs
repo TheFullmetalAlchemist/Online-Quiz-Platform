@@ -37,7 +37,7 @@ namespace Online_Quiz_Platform.Controllers
             }
 
             // Save user session
-            HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("UserName", user.Name);
 
             return RedirectToAction("Index", "Home");
         }

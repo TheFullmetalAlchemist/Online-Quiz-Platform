@@ -4,9 +4,9 @@
 
 <h1>Welcome to the Online Quiz Platform</h1>
 
-@if (!string.IsNullOrEmpty(ViewBag.Email))
+@if (!string.IsNullOrEmpty(ViewBag.Name))
 {
-    <h3>Hello, @ViewBag.Email! 🎉</h3>
+    <h3>Hello, @ViewBag.Name! 🎉</h3>
 }
 
 <p>Choose an option below:</p>
@@ -15,5 +15,9 @@
     <li><a asp-controller="Quiz" asp-action="Start">Take a Quiz</a></li>
     <li><a asp-controller="Account" asp-action="Profile">View Profile</a></li>
     <li><a asp-controller="Login" asp-action="Index">Logout</a></li>
-    <li><a class="btn btn-success" asp-controller="Leaderboard" asp-action="Index">View Leaderboard</a></li>
 </ul>
+<div class="mt-3">
+    <a class="btn btn-success btn-lg" asp-controller="Leaderboard" asp-action="Index">
+        🏆 View Leaderboard
+    </a>
+    </div>

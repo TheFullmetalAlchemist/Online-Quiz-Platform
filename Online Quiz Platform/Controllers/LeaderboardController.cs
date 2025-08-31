@@ -16,10 +16,10 @@ namespace Online_Quiz_Platform.Controllers
         public IActionResult Index()
         {
             var leaderboard = _context.QuizAttempts
-                .GroupBy(a => a.UserEmail)  // group by user
+                .GroupBy(a => a.UserName)  // group by user
                 .Select(g => new
                 {
-                    UserEmail = g.Key,
+                    UserName = g.Key,
                     TotalScore = g.Sum(a => a.Score),   // sum of all scores
                     LastPlayed = g.Max(a => a.AttemptDate)
                 })

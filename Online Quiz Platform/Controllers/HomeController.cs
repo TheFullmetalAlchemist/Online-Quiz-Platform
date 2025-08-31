@@ -7,9 +7,9 @@ namespace Online_Quiz_Platform.Controllers
         public IActionResult Index()
         {
             // You can also pass data like username via TempData
-            var email = HttpContext.Session.GetString("UserEmail");
-            ViewBag.Email = email;
+            ViewBag.Name = HttpContext.Session.GetString("UserName");
             return View();
         }
     }
+
 }

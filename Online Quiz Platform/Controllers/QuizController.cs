@@ -23,31 +23,61 @@ namespace Online_Quiz_Platform.Controllers
             return View(questions);
         }
 
-        // Step 2: Handle all answers at once
         [HttpPost]
         public IActionResult SubmitQuiz(Dictionary<Guid, Guid> answers)
         {
             int totalQuestions = answers.Count;
             int correctAnswers = 0;
 
+            // ✅ Get the quiz from the first question in the answers
+            var firstQuestionId = answers.Keys.FirstOrDefault();
+            var question = _context.Questions.FirstOrDefault(q => q.Id == firstQuestionId);
+
+            if (question == null)
+            {
+                return NotFound("Invalid quiz submission. Question not found.");
+            }
+
+            var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == question.QuizId);
+
+            if (quiz == null)
+            {
+                return NotFound("Quiz not found.");
+            }
+
             foreach (var answer in answers)
             {
-                var questionId = answer.Key;
-                var selectedOptionId = answer.Value;
+                var q = _context.Questions.FirstOrDefault(x => x.Id == answer.Key);
 
-                var question = _context.Questions.FirstOrDefault(q => q.Id == questionId);
-
-                if (question != null && question.Correctoption == selectedOptionId)
+                if (q != null && q.Correctoption == answer.Value)
                 {
                     correctAnswers++;
                 }
             }
 
+            int scorePercentage = (int)((double)correctAnswers / totalQuestions * 100);
+
+            // ✅ Save the attempt with a valid QuizId
+            var attempt = new QuizAttempt
+            {
+                UserName = HttpContext.Session.GetString("UserName") ?? "Guest",
+                Score = scorePercentage,
+                AttemptDate = DateTime.Now,
+                QuizId = quiz.Id
+            };
+
+            _context.QuizAttempts.Add(attempt);
+            _context.SaveChanges();
+
             ViewBag.TotalQuestions = totalQuestions;
             ViewBag.CorrectAnswers = correctAnswers;
-            ViewBag.ScorePercentage = (int)((double)correctAnswers / totalQuestions * 100);
+            ViewBag.ScorePercentage = scorePercentage;
 
             return View("FinalScore");
         }
+
     }
+
 }
+
+
