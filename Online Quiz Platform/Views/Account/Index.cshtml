@@ -1,0 +1,14 @@
+﻿@model Online_Quiz_Platform.Models.Entities.Register
+
+<h2>👤 Profile</h2>
+
+<div class="card p-3 shadow-sm" style="max-width:500px;">
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+</div>
+
+<div class="mt-3">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">⬅ Back to Home</a>
+    <a asp-controller="Login" asp-action="Logout" class="btn btn-danger">🚪 Logout</a>
+</div>

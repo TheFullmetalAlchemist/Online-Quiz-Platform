@@ -11,8 +11,6 @@ namespace Online_Quiz_Platform.Data
         }
 
         public DbSet<Register> Registers { get; set; }
-        public DbSet<Login> Logins { get; set; }
-
         public DbSet<Question> Questions { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<QuizAttempt> QuizAttempts { get; set; }

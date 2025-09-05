@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
 using Online_Quiz_Platform.Data;
-using Online_Quiz_Platform.Models.Entities;
 
 namespace Online_Quiz_Platform.Controllers
 {
     public class LoginController : Controller
     {
         private readonly ApplicationDbContext _context;
+
         public LoginController(ApplicationDbContext context)
         {
             _context = context;
@@ -18,37 +17,37 @@ namespace Online_Quiz_Platform.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult Index(Login login)
+        public IActionResult Index(string email, string password)
         {
-            if (!ModelState.IsValid)
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                return View(login);
+                ViewBag.Error = "Please enter email and password.";
+                return View();
             }
 
-            // Find user by email
-            var user = _context.Registers.FirstOrDefault(r => r.Email == login.Email);
+            var user = _context.Registers
+                .FirstOrDefault(u => u.Email == email && u.Password == password);
 
-            // Validate user existence and password
-            if (user == null || !VerifyPassword(login.Password, user.Password))
+            if (user == null)
             {
-                ModelState.AddModelError("", "Invalid login credentials.");
-                return View(login);
+                ViewBag.Error = "Invalid login credentials.";
+                return View();
             }
 
-            // Save user session
+            // Save session
+            HttpContext.Session.SetInt32("UserId", user.Id);
+            HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserName", user.Name);
 
             return RedirectToAction("Index", "Home");
         }
 
-        // Temporary method for password check (replace with real hashing)
-        private bool VerifyPassword(string enteredPassword, string storedPassword)
+        public IActionResult Logout()
         {
-            return enteredPassword == storedPassword;
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Login");
         }
-
     }
-
 }
-

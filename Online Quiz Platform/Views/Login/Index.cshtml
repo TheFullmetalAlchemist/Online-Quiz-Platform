@@ -1,20 +1,31 @@
-﻿@model Online_Quiz_Platform.Models.Entities.Login
+﻿@{
+    ViewData["Title"] = "Login";
+}
 
-<h2>Login</h2>
+<h2>🔑 Login</h2>
 
-<form asp-action="Index" method="post">
-    <div class="mt-4">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<form method="post" asp-action="Index" asp-controller="Login">
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required />
     </div>
-    <div class="mt-4">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
+
+    <div class="form-group mt-2">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required />
     </div>
+
     <button type="submit" class="btn btn-primary mt-3">Login</button>
-    <a asp-controller="Register" asp-action="Index" class="btn btn-secondary mt-3">
-        Register as New User
-    </a>
 </form>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+}
+
+<hr />
+
+<p class="mt-3">
+    Don’t have an account?
+    <a asp-controller="Register" asp-action="Index" class="btn btn-link">Register as new user</a>
+</p>
