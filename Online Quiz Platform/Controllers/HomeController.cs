@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Online_Quiz_Platform.Controllers
 {
@@ -7,7 +8,7 @@ namespace Online_Quiz_Platform.Controllers
         public IActionResult Index()
         {
             // You can also pass data like username via TempData
-            ViewBag.Name = HttpContext.Session.GetString("UserName");
+            var name = User.FindFirstValue(ClaimTypes.Name);
             return View();
         }
     }
