@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Online_Quiz_Platform.Data;
 using Online_Quiz_Platform.Models.Entities;
+using System.Security.Claims;
 
 namespace Online_Quiz_Platform.Controllers
 {
@@ -57,10 +58,10 @@ namespace Online_Quiz_Platform.Controllers
 
             int scorePercentage = (int)((double)correctAnswers / totalQuestions * 100);
 
-            // ✅ Save the attempt with a valid QuizId
+            
             var attempt = new QuizAttempt
             {
-                UserName = HttpContext.Session.GetString("UserName") ?? "Guest",
+                UserName = User.FindFirstValue(ClaimTypes.Name) ?? "Guest", 
                 Score = scorePercentage,
                 AttemptDate = DateTime.Now,
                 QuizId = quiz.Id

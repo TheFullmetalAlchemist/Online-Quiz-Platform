@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Online_Quiz_Platform.Data;
+using System.Security.Claims;
+
 
 namespace Online_Quiz_Platform.Controllers
 {
@@ -18,36 +22,43 @@ namespace Online_Quiz_Platform.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Index(string email, string password)
-        {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-            {
-                ViewBag.Error = "Please enter email and password.";
-                return View();
-            }
 
-            var user = _context.Registers
-                .FirstOrDefault(u => u.Email == email && u.Password == password);
+        [HttpPost]
+        public async Task<IActionResult> Index(string email, string password)
+        {
+            var user = _context.Registers.FirstOrDefault(u => u.Email == email && u.Password == password);
 
             if (user == null)
             {
-                ViewBag.Error = "Invalid login credentials.";
+                TempData["ErrorMessage"] = "Invalid login credentials.";
                 return View();
             }
 
-            // Save session
-            HttpContext.Session.SetInt32("UserId", user.Id);
-            HttpContext.Session.SetString("UserEmail", user.Email);
-            HttpContext.Session.SetString("UserName", user.Name);
+            // Create claims
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(ClaimTypes.Name, user.Name),
+        new Claim("CreatorFlag", user.CreatorFlag ?? "N")
+    };
+
+            // Create identity
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Sign in
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Logout()
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Login");
         }
+
     }
 }
