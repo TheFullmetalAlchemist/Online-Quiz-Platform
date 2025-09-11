@@ -7,7 +7,6 @@ namespace Online_Quiz_Platform.Controllers
     {
         public IActionResult Index()
         {
-            // You can also pass data like username via TempData
             var name = User.FindFirstValue(ClaimTypes.Name);
             return View();
         }
