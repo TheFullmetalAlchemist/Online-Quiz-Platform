@@ -27,13 +27,19 @@ namespace Online_Quiz_Platform.Controllers
                 return View(register);
             }
 
+            if (_context.Registers.Any(x => x.Email == register.Email))
+            {
+                ModelState.AddModelError("Email", "Email already exists");
+                return View(register);
+            }
+
             if (register.Password != register.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "Passwords do not match");
                 return View(register);
             }
 
-            // Save user
+            register.CreatorFlag = "N";
             _context.Registers.Add(register);
             _context.SaveChanges();
 

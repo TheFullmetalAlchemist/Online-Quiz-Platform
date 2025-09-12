@@ -31,7 +31,7 @@ namespace Online_Quiz_Platform.Controllers
 
             if (user == null)
             {
-                ViewBag.Error = "Invalid Login Credentials";
+                ModelState.AddModelError("Email", "Invalid login credentials");
                 return View();
             }
 
