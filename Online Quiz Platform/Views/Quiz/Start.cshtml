@@ -4,9 +4,10 @@
     ViewData["Title"] = "Take the Quiz";
 }
 
-<h2>Answer all questions below</h2>
+<h2>@ViewBag.QuizTitle</h2>
 
 <form asp-action="SubmitQuiz" method="post">
+    <input type="hidden" name="quizId" value="@ViewBag.QuizId" />
     @foreach (var question in Model)
     {
         <div class="mb-4 p-3 border rounded">

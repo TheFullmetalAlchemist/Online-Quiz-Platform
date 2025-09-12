@@ -15,32 +15,43 @@ namespace Online_Quiz_Platform.Controllers
             _context = context;
         }
 
-        // Step 1: Show all questions with options in a single form
-        public IActionResult Start()
+        [HttpGet]
+        public IActionResult SelectQuiz()
         {
+            var quizzes = _context.Quizzes.ToList();
+            ViewBag.Quizzes = quizzes;
+            return View();
+        }
+
+        // Step 1: Show all questions with options in a single form
+        [HttpGet]
+        public IActionResult Start(int quizId)
+        {
+            var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == quizId);
+
+            if (quiz == null)
+            {
+                return NotFound("Quiz not found.");
+            }
+
             var questions = _context.Questions
                 .Include(q => q.Options)
+                .Where(q => q.QuizId == quizId)
                 .ToList();
+
+            ViewBag.QuizTitle = quiz.Title;
+            ViewBag.QuizId = quizId;
+
             return View(questions);
         }
 
         [HttpPost]
-        public IActionResult SubmitQuiz(Dictionary<Guid, Guid> answers)
+        public IActionResult SubmitQuiz(int quizId, Dictionary<Guid, Guid> answers)
         {
             int totalQuestions = answers.Count;
             int correctAnswers = 0;
 
-            // ✅ Get the quiz from the first question in the answers
-            var firstQuestionId = answers.Keys.FirstOrDefault();
-            var question = _context.Questions.FirstOrDefault(q => q.Id == firstQuestionId);
-
-            if (question == null)
-            {
-                return NotFound("Invalid quiz submission. Question not found.");
-            }
-
-            var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == question.QuizId);
-
+            var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == quizId);
             if (quiz == null)
             {
                 return NotFound("Quiz not found.");
@@ -56,12 +67,13 @@ namespace Online_Quiz_Platform.Controllers
                 }
             }
 
-            int scorePercentage = (int)((double)correctAnswers / totalQuestions * 100);
+            int scorePercentage = totalQuestions > 0
+                ? (int)((double)correctAnswers / totalQuestions * 100)
+                : 0;
 
-            
             var attempt = new QuizAttempt
             {
-                UserName = User.FindFirstValue(ClaimTypes.Name) ?? "Guest", 
+                UserName = User.FindFirstValue(ClaimTypes.Name) ?? "Guest",
                 Score = scorePercentage,
                 AttemptDate = DateTime.Now,
                 QuizId = quiz.Id

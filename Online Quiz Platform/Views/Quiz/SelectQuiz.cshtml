@@ -1,0 +1,17 @@
+﻿@model List<Online_Quiz_Platform.Models.Entities.Quiz>
+
+<form asp-controller="Quiz" asp-action="Start" method="get">
+    <div class="form-group mb-3">
+        <label class="form-label fw-bold">Select Quiz</label>
+        <select name="quizId" class="form-control" required>
+            <option value="">-- Select Quiz --</option>
+            @foreach (var quiz in ViewBag.Quizzes)
+            {
+                <option value="@quiz.Id">@quiz.Title</option>
+            }
+        </select>
+    </div>
+    <div class="d-flex gap-2 mt-4">
+        <button type="submit" class="btn btn-secondary">Start</button>
+    </div>
+</form>
