@@ -4,16 +4,16 @@
 
 <h1>Welcome to the Online Quiz Platform</h1>
 
-@if (!string.IsNullOrEmpty(ViewBag.Name))
+@if (!string.IsNullOrEmpty(ViewBag.UserName))
 {
-    <h3>Hello, @ViewBag.Name! 🎉</h3>
+    <h3>Hello, @ViewBag.UserName ! 🎉</h3>
 }
 
 <p>Choose an option below:</p>
 
 <ul>
     <li><a asp-controller="Quiz" asp-action="Start">Take a Quiz</a></li>
-    <li><a asp-controller="Account" asp-action="Index">View Profile</a></li>
+    <li><a asp-controller="Account" asp-action="Index">View Account</a></li>
     <li><a asp-controller="Login" asp-action="Index">Logout</a></li>
 </ul>
 <div class="mt-3">

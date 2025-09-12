@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Online_Quiz_Platform.Data;
 using Online_Quiz_Platform.Models.Entities;
 
@@ -20,14 +21,14 @@ namespace Online_Quiz_Platform.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(Register register)
+        public async Task<IActionResult> Index(Register register)
         {
             if (!ModelState.IsValid)
             {
                 return View(register);
             }
 
-            if (_context.Registers.Any(x => x.Email == register.Email))
+            if (await _context.Registers.AnyAsync(x => x.Email == register.Email))
             {
                 ModelState.AddModelError("Email", "Email already exists");
                 return View(register);
@@ -41,7 +42,7 @@ namespace Online_Quiz_Platform.Controllers
 
             register.CreatorFlag = "N";
             _context.Registers.Add(register);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Login");
         }

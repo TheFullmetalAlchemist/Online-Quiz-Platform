@@ -8,6 +8,7 @@ namespace Online_Quiz_Platform.Controllers
         public IActionResult Index()
         {
             var name = User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.UserName = name;
             return View();
         }
     }
