@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Online_Quiz_Platform.Data;
+using System.Security.Claims;
 
-[ApiController]
-[Route("api/[controller]")]
-public class CreatorController : ControllerBase
+public class CreatorController : Controller
 {
     private readonly ApplicationDbContext _context;
 
@@ -12,27 +11,58 @@ public class CreatorController : ControllerBase
         _context = context;
     }
 
-    [HttpPut("enable/{id}")]
-    public IActionResult EnableCreator(int id)
+    [HttpGet]
+    public IActionResult Index()
     {
-        var user = _context.Registers.FirstOrDefault(u => u.Id == id);
-        if (user == null) return NotFound();
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult EnableCreator()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            return Unauthorized();
+
+        var user = _context.Registers.FirstOrDefault(u => u.Id.ToString() == userId);
+
+        if (user == null)
+            return NotFound();
 
         user.CreatorFlag = "Y";
         _context.SaveChanges();
 
-        return Ok(new { message = "User is now a Creator", user });
+        // ✅ Store message in TempData
+        TempData["Message"] = "You are now a Creator!";
+
+        return RedirectToAction("Index", "Account");
     }
 
-    [HttpPut("disable/{id}")]
-    public IActionResult DisableCreator(int id)
+    [HttpPost]
+    public IActionResult DisableCreator()
     {
-        var user = _context.Registers.FirstOrDefault(u => u.Id == id);
-        if (user == null) return NotFound();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+            return Unauthorized();
+
+        var user = _context.Registers.FirstOrDefault(u => u.Id.ToString() == userId);
+
+        if (user == null)
+            return NotFound();
 
         user.CreatorFlag = "N";
         _context.SaveChanges();
 
-        return Ok(new { message = "User is no longer a Creator", user });
+        // ✅ Store message in TempData
+        TempData["Message"] = "You are no longer a Creator!";
+
+        return RedirectToAction("Index", "Account");
     }
+
 }
+
+
+
+
