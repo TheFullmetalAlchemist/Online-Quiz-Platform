@@ -23,27 +23,23 @@ namespace Online_Quiz_Platform.Controllers
             return View();
         }
 
-        // Step 1: Show all questions with options in a single form
         [HttpGet]
         public IActionResult Start(int quizId)
         {
-            var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == quizId);
-
-            if (quiz == null)
-            {
-                return NotFound("Quiz not found.");
-            }
-
             var questions = _context.Questions
+                .Where(q => q.QuizId == quizId)  
                 .Include(q => q.Options)
-                .Where(q => q.QuizId == quizId)
                 .ToList();
 
-            ViewBag.QuizTitle = quiz.Title;
-            ViewBag.QuizId = quizId;
+            if (!questions.Any())
+            {
+                return Content("No questions found for this quiz."); 
+            }
 
+            ViewBag.QuizId = quizId;
             return View(questions);
         }
+
 
         [HttpPost]
         public IActionResult SubmitQuiz(int quizId, Dictionary<Guid, Guid> answers)

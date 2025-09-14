@@ -16,6 +16,9 @@ else
     <p class="text-danger">❌ Better luck next time.</p>
 }
 
-<a asp-controller="Quiz" asp-action="Start" class="btn btn-primary mt-3">Retake Quiz</a>
+
+<a asp-controller="Quiz" asp-action="Start" asp-route-quizId="@ViewBag.QuizId" class="btn btn-primary mt-3">
+    Retake Quiz
+</a>
 
 <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Back to Home</a>

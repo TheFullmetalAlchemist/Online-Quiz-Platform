@@ -4,19 +4,25 @@
     ViewData["Title"] = "Take the Quiz";
 }
 
-<h2>@ViewBag.QuizTitle</h2>
+<h2>Answer all questions below</h2>
 
 <form asp-action="SubmitQuiz" method="post">
+    <!-- Hidden field for quizId -->
     <input type="hidden" name="quizId" value="@ViewBag.QuizId" />
+
     @foreach (var question in Model)
     {
-        <div class="mb-4 p-3 border rounded">
-            <p><strong>@question.Text</strong></p>
+        <div class="question-block mb-4 p-3 border rounded">
+            <h4>@question.Text</h4>
+
             @foreach (var option in question.Options)
             {
                 <div>
-                    <input type="radio" name="answers[@question.Id]" value="@option.Id" required />
-                    @option.Text
+                    <input type="radio"
+                           name="answers[@question.Id]"
+                           value="@option.Id"
+                           required />
+                    <label>@option.Text</label>
                 </div>
             }
         </div>
