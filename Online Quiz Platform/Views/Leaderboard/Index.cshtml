@@ -1,35 +1,47 @@
-﻿@model IEnumerable<dynamic>
+﻿@model IEnumerable<Online_Quiz_Platform.Models.Entities.QuizAttempt>
 
-<h2>🏆 Leaderboard</h2>
+@{
+    string currentSortColumn = ViewBag.CurrentSortColumn ?? "Score";
+    string currentSortOrder = ViewBag.CurrentSortOrder ?? "desc";
+    string nextSortOrder = currentSortOrder == "asc" ? "desc" : "asc";
+}
 
-<table class="table table-bordered">
+<h2>Leaderboard</h2>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Rank</th>
-            <th>User</th>
-            <th>Total Score</th>
-            <th>Last Played</th>
+            <th>
+                <a asp-action="Index" asp-route-sortColumn="username" asp-route-sortOrder="@nextSortOrder">
+                    User Name @(currentSortColumn == "username" ? (currentSortOrder == "asc" ? "↑" : "↓") : "")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortColumn="score" asp-route-sortOrder="@nextSortOrder">
+                    Score @(currentSortColumn == "score" ? (currentSortOrder == "asc" ? "↑" : "↓") : "")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortColumn="attemptdate" asp-route-sortOrder="@nextSortOrder">
+                    Attempt Date @(currentSortColumn == "attemptdate" ? (currentSortOrder == "asc" ? "↑" : "↓") : "")
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortColumn="quiz" asp-route-sortOrder="@nextSortOrder">
+                    Quiz Title @(currentSortColumn == "quiz" ? (currentSortOrder == "asc" ? "↑" : "↓") : "")
+                </a>
+            </th>
         </tr>
     </thead>
     <tbody>
-        @{
-            int rank = 1;
-            foreach (var item in Model)
-            {
-                <tr>
-                    <td>@rank</td>
-                    <td>@item.UserName</td>
-                    <td>@item.TotalScore</td>
-                    <td>@item.LastPlayed.ToString("g")</td>
-                </tr>
-                rank++;
-            }
+        @foreach (var attempt in Model)
+        {
+            <tr>
+                <td>@attempt.UserName</td>
+                <td>@attempt.Score</td>
+                <td>@attempt.AttemptDate.ToString("dd-MM-yyyy HH:mm")</td>
+                <td>@attempt.Quiz?.Title</td>
+            </tr>
         }
     </tbody>
 </table>
-
-<div class="mt-3">
-    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
-        ⬅ Back to Home
-    </a>
-</div>
