@@ -84,6 +84,23 @@ namespace Online_Quiz_Platform.Controllers
 
             return View("FinalScore");
         }
+        [HttpGet]
+        public IActionResult Create(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                TempData["ErrorMessage"] = "Quiz title is required.";
+                return RedirectToAction("SelectQuiz", "Quiz");
+            }
+
+            var quiz = new Quiz { Title = title };
+            _context.Quizzes.Add(quiz);
+            _context.SaveChanges();
+
+            // Redirect directly to Add Questions for this new quiz
+            return RedirectToAction("Create", "AddQuestions", new { quizId = quiz.Id });
+        }
+
 
     }
 

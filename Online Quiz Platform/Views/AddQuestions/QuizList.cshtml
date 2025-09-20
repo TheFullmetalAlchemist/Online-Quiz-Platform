@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Select or Create Quiz";
+}
+
+<h2>Select or Create Quiz</h2>
+
+<!-- Select existing quiz -->
+<form asp-controller="AddQuestions" asp-action="Create" method="get" class="mb-4">
+    <div class="form-group mb-3">
+        <label class="form-label fw-bold">Select Existing Quiz</label>
+        <select name="quizId" class="form-control" required>
+            <option value="">-- Select Quiz --</option>
+            @foreach (var quiz in ViewBag.Quizzes)
+            {
+                <option value="@quiz.Id">@quiz.Title</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-sm btn-success">Add Questions</button>
+</form>
+
+<hr />
+
+<!-- Create new quiz -->
+<form asp-controller="Quiz" asp-action="Create" method="get">
+    <div class="form-group mb-3">
+        <label class="form-label fw-bold">Or Create a New Quiz</label>
+        <input type="text" name="title" class="form-control" placeholder="Enter new quiz title" required />
+    </div>
+    <button type="submit" class="btn btn-sm btn-primary">Create Quiz & Add Questions</button>
+</form>
