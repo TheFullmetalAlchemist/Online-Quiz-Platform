@@ -1,9 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Add Question";
     var quizId = ViewBag.QuizId;
+    var quizTitle = ViewBag.QuizTitle;
 }
 
-<h2>Add Question to Quiz @quizId</h2>
+<h2>Add Question to Quiz @quizTitle</h2>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -19,7 +20,7 @@
     </div>
 }
 
-<form asp-controller="AddQuestions" asp-action="Create" method="post">
+<form asp-controller="AddQuestions" asp-action="Add" method="post">
     <input type="hidden" name="quizId" value="@quizId" />
 
     <!-- Question Text -->
@@ -44,4 +45,7 @@
     </div>
 
     <button type="submit" class="btn btn-success">Save Question</button>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Exit</a>
+
 </form>
+

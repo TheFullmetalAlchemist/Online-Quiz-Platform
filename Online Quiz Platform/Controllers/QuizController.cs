@@ -84,23 +84,31 @@ namespace Online_Quiz_Platform.Controllers
 
             return View("FinalScore");
         }
+
         [HttpGet]
         public IActionResult Create(string title)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
                 TempData["ErrorMessage"] = "Quiz title is required.";
-                return RedirectToAction("SelectQuiz", "Quiz");
+                return RedirectToAction("QuizList", "AddQuestions");
             }
 
-            var quiz = new Quiz { Title = title };
+            bool exists = _context.Quizzes
+                .Any(q => q.Title.ToLower() == title.ToLower());
+
+            if (exists)
+            {
+                TempData["ErrorMessage"] = "A quiz with this title already exists.";
+                return RedirectToAction("QuizList", "AddQuestions");
+            }
+
+            var quiz = new Quiz { Title = title, CreatedDate = DateTime.Now };
             _context.Quizzes.Add(quiz);
             _context.SaveChanges();
 
-            // Redirect directly to Add Questions for this new quiz
-            return RedirectToAction("Create", "AddQuestions", new { quizId = quiz.Id });
+            return RedirectToAction("Add", "AddQuestions", new { quizId = quiz.Id });
         }
-
 
     }
 

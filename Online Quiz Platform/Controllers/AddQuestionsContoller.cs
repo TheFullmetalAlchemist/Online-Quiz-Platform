@@ -27,20 +27,27 @@ public class AddQuestionsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create(int quizId)
+    public IActionResult Add(int quizId)
     {
         if (!IsCreator(out var redirectResult))
         {
             return redirectResult;
         }
+        var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == quizId);
+
+        if (quiz == null)
+        {
+            TempData["ErrorMessage"] = "Quiz not found.";
+            return RedirectToAction("QuizList");
+        }
 
         ViewBag.QuizId = quizId;
+        ViewBag.QuizTitle = quiz.Title;
         return View();
     }
 
     [HttpPost]
-    [ActionName("Create")]   
-    public IActionResult CreatePost(int quizId, string text, List<string> optionTexts, int correctOptionIndex)
+    public IActionResult Add(int quizId, string text, List<string> optionTexts, int correctOptionIndex)
     {
         if (!IsCreator(out var redirectResult))
         {
@@ -76,12 +83,16 @@ public class AddQuestionsController : Controller
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "Question added successfully!";
-            return RedirectToAction("Create", new { quizId });
+            return RedirectToAction("Add", new { quizId });
         }
 
+        var quiz = _context.Quizzes.FirstOrDefault(q => q.Id == quizId);
         ViewBag.QuizId = quizId;
+        ViewBag.QuizTitle = quiz != null ? quiz.Title : "Unknown Quiz";
+
         return View();
     }
+
 
 
     // Helper method to check if user is creator
