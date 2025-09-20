@@ -13,9 +13,8 @@ public class AddQuestionsController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public IActionResult QuizList()
     {
-        
         if (!IsCreator(out var redirectResult))
         {
             return redirectResult;
@@ -27,9 +26,21 @@ public class AddQuestionsController : Controller
         return View();
     }
 
+    [HttpGet]
+    public IActionResult Create(int quizId)
+    {
+        if (!IsCreator(out var redirectResult))
+        {
+            return redirectResult;
+        }
+
+        ViewBag.QuizId = quizId;
+        return View();
+    }
 
     [HttpPost]
-    public IActionResult Create(int quizId, string text, List<string> optionTexts, int correctOptionIndex)
+    [ActionName("Create")]   
+    public IActionResult CreatePost(int quizId, string text, List<string> optionTexts, int correctOptionIndex)
     {
         if (!IsCreator(out var redirectResult))
         {
@@ -38,7 +49,6 @@ public class AddQuestionsController : Controller
 
         if (ModelState.IsValid)
         {
-            // Create Question
             var question = new Question
             {
                 Id = Guid.NewGuid(),
@@ -47,7 +57,6 @@ public class AddQuestionsController : Controller
                 Options = new List<Option>()
             };
 
-            // Add options
             foreach (var optionText in optionTexts)
             {
                 var option = new Option
@@ -59,24 +68,23 @@ public class AddQuestionsController : Controller
                 question.Options.Add(option);
             }
 
-            // Save question + options
             _context.Questions.Add(question);
             _context.SaveChanges();
 
-            // Set CorrectOptionId
             var correctOption = question.Options[correctOptionIndex];
             question.Correctoption = correctOption.Id;
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "Question added successfully!";
-            return RedirectToAction("Create", new { quizId = quizId });
+            return RedirectToAction("Create", new { quizId });
         }
 
         ViewBag.QuizId = quizId;
         return View();
     }
 
-    //  Helper method to check if user is creator
+
+    // Helper method to check if user is creator
     private bool IsCreator(out IActionResult redirectResult)
     {
         redirectResult = null!;
